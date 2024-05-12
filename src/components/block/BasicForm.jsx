@@ -33,6 +33,12 @@ const flightSchema = z
   .object({
     departure: z.string().min(1, { message: "city is required" }),
     arrival: z.string().min(1, { message: "city is required" }),
+    seat: z.coerce
+      .number({
+        required_error: "Seat is required",
+        invalid_type_error: "Seat must be a number",
+      })
+      .min(1, { message: "Seat must be greater than 0" }),
   })
   .refine(data => data.departure !== data.arrival, {
     path: ["arrival"],
@@ -53,19 +59,24 @@ const BasicForm = ({ flightData, setFlightData }) => {
     defaultValues: {
       departure: "",
       arrival: "",
+      seat: 1,
     },
   });
 
   const onSubmit = values => {
     let arrival = values.arrival;
     let departure = values.departure;
-    let filteredData = data.flightOffer.filter(flight =>
-      flight.itineraries[0].segments.some(
-        segment =>
-          segment.departure.iataCode === departure &&
-          segment.arrival.iataCode === arrival
-      )
+    let seat = values.seat;
+    let filteredData = data.flightOffer.filter(
+      flight =>
+        flight.seat[0][0] >= seat &&
+        flight.itineraries[0].segments.some(
+          segment =>
+            segment.departure.iataCode === departure &&
+            segment.arrival.iataCode === arrival
+        )
     );
+    console.log(values);
     console.log(filteredData);
     setFlightData(filteredData);
   };
@@ -185,6 +196,19 @@ const BasicForm = ({ flightData, setFlightData }) => {
                     </Command>
                   </PopoverContent>
                 </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="seat"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Passenger</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
