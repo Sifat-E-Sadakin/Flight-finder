@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Table,
   TableBody,
@@ -8,9 +8,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 const BasicList = ({ flightData }) => {
-  console.log(flightData);
+  let container = useRef();
+  useGSAP(() => {
+    gsap.to(container.current.children, {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      stagger: 0.2,
+      delay: 0.8,
+      ease: "power3.inOut",
+    });
+  });
+
   return (
     <div>
       <Table className="">
@@ -30,11 +43,12 @@ const BasicList = ({ flightData }) => {
             </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody className="text-black">
+        <TableBody ref={container} className="text-black">
           {flightData.map((flight, index) => (
             <>
-              <TableRow key={index}>
+              <TableRow key={index} className="opacity-0 translate-y-3">
                 <TableCell>
+                  {flight.itineraries[0].segments[0].carrierCode}
                   {flight.itineraries[0].segments[0].flightNumber}
                 </TableCell>
                 <TableCell>

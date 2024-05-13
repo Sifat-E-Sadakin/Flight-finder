@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,6 +32,8 @@ import data from "../../../public/data/data.json";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import dateFormat, { masks } from "dateformat";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 const flightSchema = z
   .object({
     departure: z.string().min(1, { message: "city is required" }),
@@ -89,20 +91,34 @@ const BasicForm = ({ flightData, setFlightData }) => {
     setFlightData(filteredData);
     console.log(filteredData);
   };
-  let departureDate =
-    data.flightOffer[0].itineraries[0].segments[0].departure.at;
 
-  console.log(departureDate);
-
+  let container = useRef();
+  useGSAP(() => {
+    gsap.to(container.current.children, {
+      duration: 1,
+      opacity: 1,
+      x: 0,
+      ease: "power3.inOut",
+      stagger: 0.2,
+    });
+    gsap.to("#submit-btn", {
+      duration: 1.5,
+      opacity: 1,
+      ease: "power3.inOut",
+      y: 0,
+    });
+  });
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-col md:flex-row gap-5 items-center justify-center">
+        <div
+          className="flex flex-col md:flex-row gap-5  justify-center"
+          ref={container}>
           <FormField
             control={form.control}
             name="departure"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col opacity-5 translate-x-10">
                 <FormLabel>Departure</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -118,17 +134,17 @@ const BasicForm = ({ flightData, setFlightData }) => {
                           ? cities.find(city => city.value === field.value)
                               ?.label
                           : "Select city"}
-                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-5 translate-x-100" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
                       <CommandInput
-                        placeholder="Search framework..."
+                        placeholder="Search airports..."
                         className="h-9"
                       />
-                      <CommandEmpty>No framework found.</CommandEmpty>
+                      <CommandEmpty>No airport found.</CommandEmpty>
                       <CommandGroup>
                         {cities.map(city => (
                           <CommandItem
@@ -160,7 +176,7 @@ const BasicForm = ({ flightData, setFlightData }) => {
             control={form.control}
             name="arrival"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col opacity-5 translate-x-10">
                 <FormLabel>Arrival</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -176,17 +192,17 @@ const BasicForm = ({ flightData, setFlightData }) => {
                           ? cities.find(city => city.value === field.value)
                               ?.label
                           : "Select city"}
-                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-5 translate-x-100" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
                       <CommandInput
-                        placeholder="Search framework..."
+                        placeholder="Search airports..."
                         className="h-9"
                       />
-                      <CommandEmpty>No framework found.</CommandEmpty>
+                      <CommandEmpty>No airport found.</CommandEmpty>
                       <CommandGroup>
                         {cities.map(city => (
                           <CommandItem
@@ -218,7 +234,7 @@ const BasicForm = ({ flightData, setFlightData }) => {
             control={form.control}
             name="dob"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col opacity-5 translate-x-10">
                 <FormLabel>Date of departure</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -234,7 +250,7 @@ const BasicForm = ({ flightData, setFlightData }) => {
                         ) : (
                           <span>Pick a date</span>
                         )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-5 translate-x-100" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -259,7 +275,7 @@ const BasicForm = ({ flightData, setFlightData }) => {
             control={form.control}
             name="seat"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="opacity-5 translate-x-10">
                 <FormLabel>Passenger</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} />
@@ -270,7 +286,12 @@ const BasicForm = ({ flightData, setFlightData }) => {
           />
         </div>
         <div className="flex justify-center mt-5">
-          <Button type="submit">Submit</Button>
+          <Button
+            id="submit-btn"
+            className="opacity-0 translate-y-5"
+            type="submit">
+            Submit
+          </Button>
         </div>
       </form>
     </Form>
