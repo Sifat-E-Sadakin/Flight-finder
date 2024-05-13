@@ -56,6 +56,13 @@ const BasicList = ({ flightData }) => {
               </TableRow>
             </>
           ))}
+          {flightData.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={8} className="text-center">
+                No Flight Available. Try Again with a date before november 2022
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>

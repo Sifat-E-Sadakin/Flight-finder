@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { CalendarIcon, CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import {
   Command,
   CommandEmpty,
@@ -29,6 +29,9 @@ import {
 import { cn } from "@/lib/utils";
 import { uniqueCities } from "@/utiles/getData";
 import data from "../../../public/data/data.json";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import dateFormat, { masks } from "dateformat";
 const flightSchema = z
   .object({
     departure: z.string().min(1, { message: "city is required" }),
@@ -39,6 +42,9 @@ const flightSchema = z
         invalid_type_error: "Seat must be a number",
       })
       .min(1, { message: "Seat must be greater than 0" }),
+    dob: z.date({
+      required_error: "A date of birth is required.",
+    }),
   })
   .refine(data => data.departure !== data.arrival, {
     path: ["arrival"],
@@ -67,23 +73,31 @@ const BasicForm = ({ flightData, setFlightData }) => {
     let arrival = values.arrival;
     let departure = values.departure;
     let seat = values.seat;
+    let dob = dateFormat(values.dob, "isoDateTime");
     let filteredData = data.flightOffer.filter(
       flight =>
         flight.seat[0][0] >= seat &&
         flight.itineraries[0].segments.some(
           segment =>
             segment.departure.iataCode === departure &&
-            segment.arrival.iataCode === arrival
+            segment.arrival.iataCode === arrival &&
+            segment.departure.at > dob
         )
     );
-    console.log(values);
-    console.log(filteredData);
+
+    console.log(dob);
     setFlightData(filteredData);
+    console.log(filteredData);
   };
+  let departureDate =
+    data.flightOffer[0].itineraries[0].segments[0].departure.at;
+
+  console.log(departureDate);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex gap-5 items-center justify-center">
+        <div className="flex flex-col md:flex-row gap-5 items-center justify-center">
           <FormField
             control={form.control}
             name="departure"
@@ -200,6 +214,47 @@ const BasicForm = ({ flightData, setFlightData }) => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="dob"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Date of departure</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}>
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      // disabled={date =>
+                      //   date > new Date() || date < new Date("1900-01-01")
+                      // }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="seat"
