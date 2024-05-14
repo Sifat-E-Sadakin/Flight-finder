@@ -20,19 +20,18 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+## My projects in production
 
-To learn more about Next.js, take a look at the following resources:
+https://meghnacloud.gov.bd/
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+https://docs.meghnacloud.com/
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+https://portal.meghnacloud.com/
 
-## Deploy on Vercel
+## Git repositories for showcasing version control.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Git repositories of the sites in production is private. However i can provide some of my own repositories for your understanding.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# Flight-finder
-# Flight-finder
+https://github.com/Sifat-E-Sadakin/Athlete-Escapes
+
+https://github.com/Sifat-E-Sadakin/Wheels-Thrills

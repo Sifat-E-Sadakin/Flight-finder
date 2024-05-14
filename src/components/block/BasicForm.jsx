@@ -34,6 +34,7 @@ import { format } from "date-fns";
 import dateFormat, { masks } from "dateformat";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+
 const flightSchema = z
   .object({
     departure: z.string().min(1, { message: "city is required" }),
@@ -76,6 +77,9 @@ const BasicForm = ({ flightData, setFlightData }) => {
     let departure = values.departure;
     let seat = values.seat;
     let dob = dateFormat(values.dob, "isoDateTime");
+
+    // filtering data based on user input
+
     let filteredData = data.flightOffer.filter(
       flight =>
         flight.seat[0][0] >= seat &&
@@ -86,12 +90,10 @@ const BasicForm = ({ flightData, setFlightData }) => {
             segment.departure.at > dob
         )
     );
-
-    console.log(dob);
     setFlightData(filteredData);
-    console.log(filteredData);
   };
 
+  // Gsap Animation
   let container = useRef();
   useGSAP(() => {
     gsap.to(container.current.children, {
